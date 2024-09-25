@@ -9,8 +9,6 @@ function refreshWeather(response) {
   let date = new Date(response.data.time * 1000);
   let iconElement = document.querySelector("#icon");
 
-  console.log(response.data);
-
   cityElement.innerHTML = response.data.city;
   iconElement.innerHTML = `<img src ="${response.data.condition.icon_url}" class="weather-app-icon" />`;
   timeElement.innerHTML = formatDate(date);
@@ -18,6 +16,8 @@ function refreshWeather(response) {
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
+
+  getForecast(response.data.city);
 }
 
 function formatDate(date) {
@@ -52,7 +52,14 @@ function handleSearchSubmit(event) {
   searchCity(searchInput.value);
 }
 
-function displayForecast() {
+function getForecast(city) {
+  let apiKey = "cf0f31ao4d106c8ff184dbac1a07a8t3";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
+  axios(apiUrl).then(displayForecast);
+}
+
+function displayForecast(response) {
+  console.log(response.data);
   let days = ["Wed", "Thu", "Fri", "Sat", "Sun"];
   let forecastHtml = " ";
 
@@ -80,4 +87,3 @@ let searchFormElement = document.querySelector("#search-form");
 searchFormElement = addEventListener("submit", handleSearchSubmit);
 
 searchCity("Gaborone");
-displayForecast();
